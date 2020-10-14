@@ -2,17 +2,17 @@ function testVehicle()
     
     % Create the vehicle
 %     veh = SimpleUnicycle;
-    veh = SimpleBicycle;
+%     veh = SimpleBicycle;
 
-%     veh = BetterUnicycle;
-%      veh = DifferentialDive;
+    veh = BetterUnicycle;
+%       veh = DifferentialDive;
     
     % Select the control
 %     u = @(t,x)constantRadiusUnicycle(t,x);
-    u = @(t,x)constantRadiusBicycle(t,x);
+%     u = @(t,x)constantRadiusBicycle(t,x);
 
-%     u =@(t,x)DifferentialDive(t,x);
-%      u =@(t,x)BetterUnicycleDynamic(t, x)
+%      u =@(t,x)constantDifferentialDive(t,x);
+     u =@(t,x)BetterUnicycleDynamic(t, x)
     
     % Select the integration mode
 %      integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
@@ -96,10 +96,10 @@ end
 
 
 %% Differential Drive NEW
-function u = DifferentialDive(t,x)%(t, x)
-%     rw =1
-    u = [1; 1];
-%     u = [rw/2*(ur +ul); rw/2*(ur - ul)];
+function u = constantDifferentialDive(t,x)%(t, x)
+%     u[1] = velosity of left wheel
+%     u[2] = velosity of right wheel
+    u = [1; .2];
 end
 
 
