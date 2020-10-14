@@ -8,9 +8,8 @@ classdef BetterUnicycle < VehicleKinematics
     end
     methods
         function obj = BetterUnicycle()
-            obj = obj@VehicleKinematics(5);
+            obj = obj@VehicleKinematics(3);
             obj.plot_path = true;
-            obj.dimensions = 3;
             obj.c = 'g';
         end
         

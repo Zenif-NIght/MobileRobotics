@@ -9,7 +9,7 @@ classdef SimpleUnicycle < VehicleKinematics
     end
     methods
         function obj = SimpleUnicycle()
-            obj = obj@VehicleKinematics(5);
+            obj = obj@VehicleKinematics(3);
             obj.plot_path = true;
             obj.c ='r';
         end
