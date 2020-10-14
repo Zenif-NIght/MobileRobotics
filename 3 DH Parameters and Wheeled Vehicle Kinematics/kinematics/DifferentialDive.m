@@ -11,6 +11,7 @@ classdef DifferentialDive < VehicleKinematics
         function obj = DifferentialDive()
             obj = obj@VehicleKinematics(5);
             obj.plot_path = true;
+            obj.c = 'p';
         end
         
         function xdot = kinematics(obj, t, x, u)

@@ -1,22 +1,22 @@
 function testVehicle()
     
     % Create the vehicle
-    veh = SimpleUnicycle;
+%     veh = SimpleUnicycle;
 %     veh = SimpleBicycle;
 
-%     veh = SimpleUnicycle;
+    veh = BetterUnicycle;
 %      veh = DifferentialDive;
     
     % Select the control
-    u = @(t,x)constantRadiusUnicycle(t,x);
+%     u = @(t,x)constantRadiusUnicycle(t,x);
 %     u = @(t,x)constantRadiusBicycle(t,x);
 
 %     u =@(t,x)DifferentialDive(t,x);
-%      u =@(t,x)BetterUnicycle(t, x)
+     u =@(t,x)BetterUnicycleDynamic(t, x)
     
     % Select the integration mode
-     integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
-%     integrator = @(t0, dt, tf, x0, veh, u) integratorEuler(t0, dt, tf, x0, veh, u);
+%      integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
+    integrator = @(t0, dt, tf, x0, veh, u) integratorEuler(t0, dt, tf, x0, veh, u);
     
     % Integrate the state
     t0 = 0; 
@@ -104,10 +104,10 @@ end
 
 
 %% Better Unicycle NEW
-function u = BetterUnicycle(t, x)
+function u = BetterUnicycleDynamic(t, x)
 %    u1 = speed
 %    u2 = uOmega
-   u = [cos(x);1];
+   u = [1;1];
 end
 
 
