@@ -105,8 +105,13 @@ end
 
 %% Better Unicycle NEW
 function u = BetterUnicycleDynamic(t, x)
-    %    u1 = acceleration
-    %    u2 = alpha
-        u = [1 ;.5]; % 1
+    %    u1 = speed
+    %    u2 = uOmega
+%     if (t >= 0.5)
+%         u = [0;0];
+%     else
+        u = [5;.5];
+%     end
+
 end
 

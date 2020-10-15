@@ -5,10 +5,14 @@ classdef BetterUnicycle < VehicleKinematics
         a_ind = 1; % First input
         alpha_ind = 2; % Second input
         
+        % other x vector indeces
+        s_ind = 4;
+        w_ind = 5;
+        
     end
     methods
         function obj = BetterUnicycle()
-            obj = obj@VehicleKinematics(3);
+            obj = obj@VehicleKinematics(5);
             obj.plot_path = true;
             obj.c = 'g';
         end
@@ -21,10 +25,14 @@ classdef BetterUnicycle < VehicleKinematics
                         
             % Calculate dynamics
             theta = x(obj.th_ind);  % Orientation
-            xdot = zeros(3,1);
-            xdot(obj.x_ind) = v * cos(theta); % \dot{x}
-            xdot(obj.y_ind) = v * sin(theta); % \dot{y}
-            xdot(obj.th_ind) = w; % \dot{theta}            
+            s = x(obj.s_ind);
+            w = x(obj.w_ind);
+            xdot = zeros(obj.dimensions,1);
+            xdot(obj.x_ind) = s * cos(theta); % \dot{x}
+            xdot(obj.y_ind) = s * sin(theta); % \dot{y}
+            xdot(obj.th_ind) = w; % \dot{theta}
+            xdot(obj.s_ind) = a;
+            xdot(obj.w_ind) = alpha;
         end        
     end 
 end
