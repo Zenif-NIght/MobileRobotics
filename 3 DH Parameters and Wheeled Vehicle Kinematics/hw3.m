@@ -1,6 +1,6 @@
 
-% prob1()
-prob3_3()
+prob1()
+% prob3_3()
 
 
 function [] = prob1()
@@ -49,12 +49,14 @@ function [] = prob1()
 
 
     %% Exponential Coordinates
-    w  = (skew_symmetric_matrix(axis)*pi/4)
-    w2  = (skew_symmetric_matrix(axis2)*pi/4)
+    w  = (skew_symmetric_matrix(axis)*theta)
+    w2  = (skew_symmetric_matrix(axis2)*theta2)
 
     %% Resulting rotation matrix
     R_new =expm(w)
     R_new2 =expm(w2)
+    
+    logm(R_new)
 
 
     %%

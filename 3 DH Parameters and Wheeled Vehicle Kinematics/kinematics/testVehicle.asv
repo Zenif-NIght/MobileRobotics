@@ -1,5 +1,5 @@
 function testVehicle()
-    
+    close all; 
     % Create the vehicle
 %     veh = SimpleUnicycle;
 %     veh = SimpleBicycle;
@@ -23,14 +23,32 @@ function testVehicle()
     dt = 0.1;
     tf = 10;
     x0 = zeros(veh.dimensions,1); % most of the time this is it [0; 0; 0];
-    [tmat, xmat] = integrator(t0, dt, tf, x0, veh, u);
+    x0(2) =-5;
+    [tmat, xmat, umat] = integrator(t0, dt, tf, x0, veh, u);
     
     % Plot the state
     for k = 1:length(tmat)
        veh.plotState(tmat(k), xmat(:,k));
        pause(dt);
     end
+    hold off
+    figure('Name','Stuff vs Time');
+    plot(tmat, xmat(4,:))
+    hold on
+%     figure('Name','Rotational velocity vs Time');
+    plot(tmat, xmat(5,:))
+    legend('Translational velocity','Rotational velocity')
+    hold off
     
+    figure('Name',(' Inputs  vs Time'));
+    for iput = length(umat(1))
+        plot(tmat, umat(iput,:))
+        hold on
+        
+    end
+    legend("Input 1  vs Time","Input 2  vs Time")
+    hold off
+    2+2;
 end
 function [tmat, xmat] = integrateODE(t0, dt, tf, x0, veh, u)
 % Input parameters
@@ -49,7 +67,7 @@ function [tmat, xmat] = integrateODE(t0, dt, tf, x0, veh, u)
     xmat = xmat';    
 end
 
-function [tmat, xmat] = integratorEuler(t0, dt, tf, x0, veh, u)
+function [tmat, xmat, umat] = integratorEuler(t0, dt, tf, x0, veh, u)
 % Input parameters
 %   t0: initial time
 %   dt: time step for return data
@@ -62,6 +80,7 @@ function [tmat, xmat] = integratorEuler(t0, dt, tf, x0, veh, u)
     tmat = [t0:dt:tf]';
     len = length(tmat);
     xmat = zeros(veh.dimensions, len);
+    umat = zeros(length(u(1,1)), len);
     xmat(:,1) = x0;
     
     % Loop through and calculate the state
@@ -76,6 +95,7 @@ function [tmat, xmat] = integratorEuler(t0, dt, tf, x0, veh, u)
         
         % Store the state
         xmat(:,k) = x;
+        umat(:,k) = u(x,t);
     end
 
 end
@@ -105,13 +125,8 @@ end
 
 %% Better Unicycle NEW
 function u = BetterUnicycleDynamic(t, x)
-    %    u1 = speed
-    %    u2 = uOmega
-%     if (t >= 0.5)
-%         u = [0;0];
-%     else
-        u = [5;.5];
-%     end
-
+    %    u1 = acceleration
+    %    u2 = alpha
+        u = [2.5;.5]; % 1
 end
 
