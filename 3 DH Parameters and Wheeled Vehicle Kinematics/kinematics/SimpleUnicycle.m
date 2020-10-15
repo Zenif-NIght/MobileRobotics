@@ -1,14 +1,14 @@
-classdef SimpleUnicycle < VehicleKinematics
+classdef simpleUnicycle < VehicleKinematics
     %SimpleUnicycle Implements a unicycle with direct control over the
     %velocities
 
     properties
-        v_ind = 1; % First input
-        w_ind = 2; % Second input
+        a_ind = 1; % First input
+        
 
     end
     methods
-        function obj = SimpleUnicycle()
+        function obj = simpleUnicycle()
             obj = obj@VehicleKinematics(3);
             obj.plot_path = true;
             obj.c ='r';
@@ -17,7 +17,7 @@ classdef SimpleUnicycle < VehicleKinematics
         function xdot = kinematics(obj, t, x, u)
             %kinematics Gives the unicycle dynamics
             % Time derivative: [xdot; ydot; theta_dot] = [vcos(theta); vsin(theta); omega]
-            v = u(obj.v_ind);
+            v = u(obj.a_ind);
             w = u(obj.w_ind);
                         
             % Calculate dynamics

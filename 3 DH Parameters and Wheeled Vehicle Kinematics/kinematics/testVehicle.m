@@ -5,14 +5,16 @@ function testVehicle()
 %     veh = SimpleBicycle;
 
 %     veh = BetterUnicycle;
-      veh = DifferentialDive;
+%       veh = DifferentialDive;
+veh = steeringCar;
     
     % Select the control
 %     u = @(t,x)constantRadiusUnicycle(t,x);
 %     u = @(t,x)constantRadiusBicycle(t,x);
 
-     u =@(t,x)constantDifferentialDive(t,x);
+%      u =@(t,x)constantDifferentialDive(t,x);
 %      u =@(t,x)BetterUnicycleDynamic(t, x)
+      u =@(t,x)car(t, x)
     
     % Select the integration mode
 %      integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
@@ -23,7 +25,7 @@ function testVehicle()
     dt = 0.1;
     tf = 10;
     x0 = zeros(veh.dimensions,1); % most of the time this is it [0; 0; 0];
-    x0(2) =-5;
+    x0(2) =0;
     [tmat, xmat, umat] = integrator(t0, dt, tf, x0, veh, u);
     subplot(3,1,1)
     % Plot the state
@@ -89,14 +91,14 @@ function [tmat, xmat, umat] = integratorEuler(t0, dt, tf, x0, veh, u)
     for k = 1:len
         % Calculate state update equation
         t = tmat(k);
-        xdot = veh.kinematics(t, x, u(x,t));
+        xdot = veh.kinematics(t, x, u(t,x));
         
         % Update the state
         x = x + dt * xdot;
         
         % Store the state
         xmat(:,k) = x;
-        umat(:,k) = u(x,t);
+        umat(:,k) = u(t,x);
     end
 
 end
@@ -128,6 +130,10 @@ end
 function u = BetterUnicycleDynamic(t, x)
     %    u1 = acceleration
     %    u2 = alpha
-        u = [2.5;.5]; % 1
+        u = [sin(t);1]; % 1
 end
 
+function u = car(t, x)
+    u = [1];
+end 
+ 
