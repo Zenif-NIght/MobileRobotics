@@ -1,18 +1,18 @@
 function testVehicle()
     close all; 
     % Create the vehicle
-%     veh = SimpleUnicycle;
+    veh = SimpleUnicycle;
 %     veh = SimpleBicycle;
 
-    veh = BetterUnicycle;
+%     veh = BetterUnicycle;
 %       veh = DifferentialDive;
     
     % Select the control
-%     u = @(t,x)constantRadiusUnicycle(t,x);
+    u = @(t,x)constantRadiusUnicycle(t,x);
 %     u = @(t,x)constantRadiusBicycle(t,x);
 
 %      u =@(t,x)constantDifferentialDive(t,x);
-     u =@(t,x)BetterUnicycleDynamic(t, x)
+%      u =@(t,x)BetterUnicycleDynamic(t, x)
     
     % Select the integration mode
 %      integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
@@ -25,30 +25,31 @@ function testVehicle()
     x0 = zeros(veh.dimensions,1); % most of the time this is it [0; 0; 0];
     x0(2) =-5;
     [tmat, xmat, umat] = integrator(t0, dt, tf, x0, veh, u);
-    
+    subplot(3,1,1)
     % Plot the state
     for k = 1:length(tmat)
        veh.plotState(tmat(k), xmat(:,k));
        pause(dt);
     end
-    hold off
-    figure('Name','Stuff vs Time');
-    plot(tmat, xmat(4,:))
+    subplot(3,1,2)
+%     hold off
+%     figure('Name','Stuff vs Time');
+    plot(tmat, xmat(1,:))
     hold on
 %     figure('Name','Rotational velocity vs Time');
-    plot(tmat, xmat(5,:))
+    plot(tmat, xmat(3,:))
     legend('Translational velocity','Rotational velocity')
     hold off
+    subplot(3,1,3)
+%     figure('Name',(' Inputs  vs Time'));
+
+    plot(tmat, umat(1,:))
+    hold on
+    plot(tmat, umat(2,:))
     
-    figure('Name',(' Inputs  vs Time'));
-    for iput = length(umat(1))
-        plot(tmat, umat(iput,:))
-        hold on
-        
-    end
     legend("Input 1  vs Time","Input 2  vs Time")
     hold off
-    2+2;
+    12+2;
 end
 function [tmat, xmat] = integrateODE(t0, dt, tf, x0, veh, u)
 % Input parameters
@@ -104,14 +105,14 @@ end
 
 %% Simple Car / Bicycle
 function u = constantRadiusBicycle(t, x)
-    u = [1; 0.7854]; % .7854 corresponds to a steering angle that will 
+    u = [10; .2]; % .7854 corresponds to a steering angle that will 
                      %     produce w = 1 for L and v = 1
 end
 
 
 %%  Simple Unicycle
 function u = constantRadiusUnicycle(t, x)
-    u = [1; 1];
+    u = 10*[1; .2];
 end
 
 
