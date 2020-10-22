@@ -13,7 +13,7 @@ classdef SimpleBicycle < VehicleKinematics
     
     methods
         function obj = SimpleBicycle()
-            obj = obj@VehicleKinematics(3);
+            obj = obj@VehicleKinematics(4);
             obj.plot_path = true;
         end
         
@@ -24,14 +24,16 @@ classdef SimpleBicycle < VehicleKinematics
             
             % Extract inputs
             v = u(1); % Translational velocity
-            w = v/obj.L * tan(u(2)); % Rotational velocity
+            w =u(2);%  v/obj.L * tan(u(2)); % Rotational velocity
+            phi= atan2(obj.L*w,v);
             
             % Calculate dynamics
             theta = x(obj.th_ind);  % Orientation
             xdot = zeros(3,1);
             xdot(obj.x_ind) = v * cos(theta); % \dot{x}
             xdot(obj.y_ind) = v * sin(theta); % \dot{y}
-            xdot(obj.th_ind) = w; % \dot{theta}            
+            xdot(obj.th_ind) = w; % \dot{theta}  
+            xdot(obj.th_ind+1) = phi;
         end 
         
         function [v, w] = getVelocities(obj, t, x, u)

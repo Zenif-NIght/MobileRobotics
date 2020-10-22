@@ -2,13 +2,13 @@ function testVehicle()
 
     % Create the vehicle
 %     veh = SimpleUnicycle;
-    veh = DifferentialDrive;
-%     veh = SimpleBicycle;
-    
-    % Select the control
 %     u = @(t,x)constantRadiusUnicycle(t,x);
-    u = @(t,x)constantDifferentialDive(t,x,veh);
-%     u = @(t,x)constantRadiusBicycle(t,x);
+
+%     veh = DifferentialDrive;
+%     u = @(t,x)constantDifferentialDive(t,x,veh);
+
+    veh = SimpleBicycle;
+    u = @(t,x)constantRadiusBicycle(t,x);
     
     % Select the integration mode
     %integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
@@ -33,7 +33,7 @@ function testVehicle()
 
     subplot(2,2,2)
     plot(tmat, xdotmat(veh.th_ind+1,:))
-    title('Linerar velocity vs time xdotmat(veh.th_ind+1,:) ')
+    title('phi vs time xdotmat(veh.th_ind+1,:) ')
 
     subplot(2,2,3)
     plot(tmat, xdotmat(veh.th_ind,:))
@@ -44,7 +44,7 @@ function testVehicle()
     plot(tmat, umat(1,:))
     plot(tmat, umat(2,:))
     hold off
-    legend('Left velocity','Right velocity')
+    legend('Linerar velocity','Angluler velocity')
     title('Control vs. Time u=ul,ur')
 
     
@@ -123,6 +123,8 @@ function u = constantDifferentialDive(t,x,veh)%(t, x)
 end
 
 function u = constantRadiusBicycle(t, x)
-    u = [1; 0.7854]; % .7854 corresponds to a steering angle that will produce w = 1 for L and v = 1
+    v= 2.5;
+    w= 0.4;
+    u = [v; w]; 
 end
 
