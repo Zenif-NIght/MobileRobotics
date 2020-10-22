@@ -32,20 +32,16 @@ function testVehicle()
 
 
     subplot(2,2,2)
-    plot(tmat, xdotmat(veh.th_ind+1,:))
+    plot(tmat, umat(veh.th_ind+1,:))
     title('Linerar velocity vs time xdotmat(veh.th_ind+1,:) ')
 
     subplot(2,2,3)
-    plot(tmat, xdotmat(veh.th_ind,:))
+    plot(tmat, umat(2,:))
     title('Angluler velocity vs time xdotmat(veh.th_ind,:) ')
     
     subplot(2,2,4)
-    hold on
-    plot(tmat, umat(1,:))
-    plot(tmat, umat(2,:))
-    hold off
-    legend('Left velocity','Right velocity')
-    title('Control vs. Time u=ul,ur')
+    plot(tmat, xdotmat(veh.th_ind,:))
+    title('Control vs. Time w')
 
     
 end

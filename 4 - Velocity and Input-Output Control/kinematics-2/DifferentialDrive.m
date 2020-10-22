@@ -9,7 +9,7 @@ classdef DifferentialDrive < VehicleKinematics
     
     methods
         function obj = DifferentialDrive()
-            obj = obj@VehicleKinematics(3);
+            obj = obj@VehicleKinematics(4);
             obj.plot_path = true;
         end
         
@@ -31,7 +31,9 @@ classdef DifferentialDrive < VehicleKinematics
             xdot = zeros(3,1);
             xdot(obj.x_ind) = v * cos(theta); % \dot{x}
             xdot(obj.y_ind) = v * sin(theta); % \dot{y}
-            xdot(obj.th_ind) = w; % \dot{theta}          
+            xdot(obj.th_ind) = w; % \dot{theta}  
+%             Save the Velosity in the x dot
+            xdot(obj.th_ind+1) = v;
             
         end  
         
