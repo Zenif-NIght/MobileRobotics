@@ -39,6 +39,47 @@ close all;
 %     u = @(t,x)constantRadiusSmoothDiffDrive(t,x,veh, K);
 %     x0 = [0; 0; 0; 0; 0];
 
+    %% Smooth Bicycle Drive 
+%     vdmax = .1*1.0; % Maximum desired velocity 
+%     wdmax = 2*0.1; % Maximum desired angular velocity
+%     armax = 0.1; % Maxiumum angular acceleration
+%     almax = 0.1; % Maxiumum angular acceleration
+%     
+%     veh = SmoothBicycleDrive;
+%     r = veh.r;
+%     L = veh.L;
+%     % Calculate point control gains
+%     A = [zeros(2)]
+%     M = [r/2 r/2;r/L -r/L]
+%     Q = [1/vdmax^2 0;0 1/wdmax^2]
+%     R = [1/armax^2 0; 0 1/almax^2]
+%     K = lqr(A, M, Q, R)
+% 
+%     u = @(t,x)constantRadiusSmoothBicycle(t,x,veh, K);
+%     x0 = [0; 0; 0; 0; 0];
+
+    %% Better Differential - Input/output go to goal
+    % Set maximum values
+    p_max = 0.5; % Maximum desired position deviation
+    p_dot_max = 0.1; % Maximum desired velocity deviation
+    p_ddot_max = 0.25; % Maximum desired acceleration deviation
+    
+    % Calculate point control gains
+    A = [zeros(2) eye(2); zeros(2,4)]; 
+    B = [zeros(2); eye(2)];
+    Q = diag([1/p_max^2, 1/p_max^2, 1/p_dot_max^2, 1/p_dot_max^2]);
+    R = diag([1/p_ddot_max^2, 1/p_ddot_max^2]);
+    K = lqr(A, B, Q, R);
+    
+    % Create the vehicle and desired values
+    veh = BetterUnicycle;    
+    q_d = [5; -3; 0; 0];
+    eps = 1.0;
+    
+    % Create the controller and initial conditions
+    u = @(t,x)goToGoalApproximateDiffeomorphismUnicycle(t, x, veh, q_d, eps, K);
+    x0 = [0; 0; 0; 0; 0];
+
     %% Better Unicycle - Input/output go to goal
     % Set maximum values
 %     p_max = 0.5; % Maximum desired position deviation
@@ -161,6 +202,23 @@ function u = constantRadiusSmoothDiffDrive(t, x, veh, K)
     z = x - xd;
     
     u = -K * z;   
+end
+
+%% Simple Smooth Car / Bicycle
+function u = constantRadiusSmoothBicycle(t, x,veh, K)
+%     u = [10; .2]; % .7854 corresponds to a steering angle that will 
+%                      %     produce w = 1 for L and v = 1
+
+    vd = 2.5;
+    wd = 0.4;
+    
+    [v,w] = veh.getVelocities(t, x, 0); 
+    x = [v; w];
+    xd = [vd; wd];
+    z = x - xd;
+    
+    u = -K * z;   
+
 end
 
 function u = goToGoalApproximateDiffeomorphismUnicycle(t, x, veh, q_d, eps, K)
