@@ -2,29 +2,29 @@ function Controllers()
 close all;
     
     %% Better Unicycle
-%     vdmax = 0.6*1.0; % Maximum desired velocity 
-%     wdmax =3*0.1; % Maximum desired angular velocity
-%     amax = 0.1; % Maximum acceleration
-%     alphamax = 0.05; % Maxiumum angular acceleration
-%     
-%     % Calculate point control gains
-%     A = [zeros(2)]
-%     B = [eye(2)]
-%     Q = [1/vdmax^2 0;0 1/wdmax^2]
-%     R = [1/amax^2 0; 0 1/alphamax^2]
-%     K = lqr(A, B, Q, R)
-%     
-%     veh = BetterUnicycle;
-%     
-%     u = @(t,x)constantRadiusBetterUnicycle(t,x,veh, K);
-%     x0 = [0; 0; 0; 0; 0];
+    vdmax = 0.6*1.0; % Maximum desired velocity 
+    wdmax =3*0.1; % Maximum desired angular velocity
+    amax = 0.1; % Maximum acceleration
+    alphamax = 0.05; % Maxiumum angular acceleration
+    
+    % Calculate point control gains
+    A = [zeros(2)]
+    B = [eye(2)]
+    Q = [1/vdmax^2 0;0 1/wdmax^2]
+    R = [1/amax^2 0; 0 1/alphamax^2]
+    K = lqr(A, B, Q, R)
+    
+    veh = BetterUnicycle;
+    
+    u = @(t,x)constantRadiusBetterUnicycle(t,x,veh, K);
+    x0 = [0; 0; 0; 0; 0];
 
     
     %% Smooth Differential Drive 
-%     vdmax = .1*1.0; % Maximum desired velocity 
-%     wdmax = 2*0.1; % Maximum desired angular velocity
-%     armax = 0.1; % Maxiumum angular acceleration
-%     almax = 0.1; % Maxiumum angular acceleration
+    vdmax = .1*1.0; % Maximum desired velocity 
+    wdmax = 2*0.1; % Maximum desired angular velocity
+    armax = 0.1; % Maxiumum angular acceleration
+    almax = 0.1; % Maxiumum angular acceleration
 %     
 %     veh = SmoothDifferentialDrive;
 %     r = veh.r;
