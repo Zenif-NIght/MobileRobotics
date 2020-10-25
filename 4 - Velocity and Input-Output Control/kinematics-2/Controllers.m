@@ -80,7 +80,7 @@ close all;
     
     % Create the vehicle and desired values   
     q_d = [4; 3;0; 0;];
-    eps = 1.0;
+    eps = 0.10;
     
     % Create the controller and initial conditions
     u = @(t,x)goToGoalApproximateDiffeomorphismDifferential(t, x, veh, q_d, eps, K);
