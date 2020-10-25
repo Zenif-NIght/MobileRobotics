@@ -40,7 +40,7 @@ classdef SmoothDifferentialDrive < DifferentialDrive
             xdot(obj.ind_wl) = ul; % \dot{wl}            
         end   
         
-        function [v, w] = getVelocities(obj, t, x, u)
+        function [wr, wl, v, w] = getVelocities(obj, t, x, u)
             % Extract wheel angular velocities
             wr = x(obj.ind_wr);
             wl = x(obj.ind_wl);

@@ -111,13 +111,13 @@ close all;
     
     %% Simulate
     % Select the integration mode
-    integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
-%     integrator = @(t0, dt, tf, x0, veh, u) integratorEuler(t0, dt, tf, x0, veh, u);
+%     integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
+    integrator = @(t0, dt, tf, x0, veh, u) integratorEuler(t0, dt, tf, x0, veh, u);
     
     % Integrate the state
     t0 = 0; 
     dt = 0.1;
-    tf =8;
+    tf =25;
     [tmat, xmat] = integrator(t0, dt, tf, x0, veh, u);
     
     % Plot the velocities
@@ -231,7 +231,7 @@ function u = goToGoalApproximateDiffeomorphismDifferential(t, x, veh, q_d, eps, 
     % Get states
     x_pos = x(veh.x_ind);
     y_pos = x(veh.y_ind);
-    [v, w] = veh.getVelocities(t, x, 0);
+    [wr, wl, v, w] = veh.getVelocities(t, x, 0);
     th = x(veh.th_ind);
     c = cos(th);
     s = sin(th);
@@ -247,10 +247,15 @@ function u = goToGoalApproximateDiffeomorphismDifferential(t, x, veh, q_d, eps, 
     q = [q_eps; q_eps_dot];
     
     % Calculate point control
-    u_point = -K*(q - q_d);
+    u_point = -K*(q - q_d) ;
     
     % Calculate the control inputs
-    u = R_e_inv*u_point - w_hat_e*[v; w];    
+    aVec = R_e_inv*u_point - w_hat_e*[v; w]; 
+    a = aVec(1);
+    alpha = aVec(2);
+    alpha_r  = (alpha*veh.L+2*a)/(2*veh.rad);
+    alpha_l = (2/veh.rad)*a - alpha_r;
+    u = [alpha_r; alpha_l] ;
 end
 
 function u = goToGoalApproximateDiffeomorphismUnicycle(t, x, veh, q_d, eps, K)
