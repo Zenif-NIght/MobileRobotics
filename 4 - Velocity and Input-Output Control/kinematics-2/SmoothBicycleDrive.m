@@ -3,12 +3,12 @@ classdef SmoothBicycleDrive < VehicleKinematics
     %velocities
     
     properties
-        ind_a = 4 % velocity of right wheel
-        ind_phi = 5 % Rotational angle of left wheel
-
-        rad = 0.25;
+        v_ind = 4; % velocity of bicycle
+        w_ind = 5; % angular velocity of bicycle (just to store)
+        phi_ind = 6; % steering angle of bicycle
         % Vehicle properties
-        L = 1
+        rad = 0.25;
+        L = 1;
 
         % Plotting properties
         h_wheel = [];
@@ -18,49 +18,40 @@ classdef SmoothBicycleDrive < VehicleKinematics
     methods
         function obj = SmoothBicycleDrive()
 %             obj = obj@DifferentialDrive();
-            obj = obj@VehicleKinematics(5);
-            obj.dimensions = 5;
+            obj = obj@VehicleKinematics(6);
+            obj.dimensions = 6;
         end
         
         function xdot = kinematics(obj, t, x, u)
-            %kinematics Gives the unicycle dynamics
+            %kinematics Gives the bicycle dynamics
             %   [x; y; theta] = [vcos(theta); vsin(theta); omega]
-            %   u = [v; omega]
+            %   u = [v; phi]
             
-%             % Extract inputs
-%             ur = u(1); % Rotational velocity of right wheel
-%             ul = u(2); % Rotational velocity of left wheel
-%             
-%             % Extract wheel angular velocities
-%             wr = x(obj.ind_wr);
-%             wl = x(obj.ind_wl);
-%             
-%             % Calculate velocities
-%             v = obj.rad/2*(wr+wl); % Translational velocity
-%             w = obj.rad/obj.L*(wr-wl); % Rotational velocity
-
-                        % Extract inputs
-            a = u(1); % Translational velocity
-            phiDot = u(2); % Rotational velocity
+            % Extract bicycle states
+            v = x(obj.v_ind);
+            w = x(obj.w_ind);
+            phi = x(obj.phi_ind);
+            
+            % Extract inputs
+            a = u(1); % Translational acceleration
+            phiDot = u(2); % Steering angle Rotational velocity
             
             % Calculate dynamics
+            alpha = a*(sec(phi)^2)/obj.L;
             theta = x(obj.th_ind);  % Orientation
             xdot = zeros(obj.dimensions,1);
             xdot(obj.x_ind) = v * cos(theta); % \dot{x}
             xdot(obj.y_ind) = v * sin(theta); % \dot{y}
             xdot(obj.th_ind) = w; % \dot{theta} 
-            xdot(obj.ind_a) = a; % \dot{wr}
-            xdot(obj.ind_phi) = phiDot; % \dot{wl}            
+            xdot(obj.v_ind) = a; % \dot{v}\
+            xdot(obj.w_ind) = alpha;
+            xdot(obj.phi_ind) = phiDot; % \dot{phi} 
         end   
         
         function [v, w] = getVelocities(obj, t, x, u)
-            % Extract wheel angular velocities
-            wr = x(obj.ind_a);
-            wl = x(obj.ind_phiDot);
-            
             % Calculate velocities
-            v = obj.rad/2*(wr+wl); % Translational velocity
-            w = obj.rad/obj.L*(wr-wl); % Rotational velocity
+            v = x(obj.v_ind); % Translational velocity
+            w = x(obj.w_ind); % Rotational velocity
         end
         
         function plotState(obj, t, x)
