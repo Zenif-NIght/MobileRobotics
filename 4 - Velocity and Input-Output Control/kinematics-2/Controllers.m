@@ -62,22 +62,28 @@ close all;
     % Set maximum values
     p_max = 0.5; % Maximum desired position deviation
     p_dot_max = 0.1; % Maximum desired velocity deviation
-    p_ddot_max = 0.25; % Maximum desired acceleration deviation
+    p_ddot_max = 0.1; % Maximum desired acceleration deviation
+    
+    veh = SmoothDifferentialDrive;
+    r = veh.rad;
+    L = veh.L;
+%     R_eps =[cos(theta) -eps*sin(
     
     % Calculate point control gains
+
     A = [zeros(2) eye(2); zeros(2,4)]; 
-    B = [zeros(2); eye(2)];
+    M = [r/2 r/2;r/L -r/L];
+    B = [zeros(2); eye(2)];%
     Q = diag([1/p_max^2, 1/p_max^2, 1/p_dot_max^2, 1/p_dot_max^2]);
     R = diag([1/p_ddot_max^2, 1/p_ddot_max^2]);
     K = lqr(A, B, Q, R);
     
-    % Create the vehicle and desired values
-    veh = BetterUnicycle;    
-    q_d = [5; -3; 0; 0];
+    % Create the vehicle and desired values   
+    q_d = [4; 3;0; 0;];
     eps = 1.0;
     
     % Create the controller and initial conditions
-    u = @(t,x)goToGoalApproximateDiffeomorphismUnicycle(t, x, veh, q_d, eps, K);
+    u = @(t,x)goToGoalApproximateDiffeomorphismDifferential(t, x, veh, q_d, eps, K);
     x0 = [0; 0; 0; 0; 0];
 
     %% Better Unicycle - Input/output go to goal
@@ -106,12 +112,12 @@ close all;
     %% Simulate
     % Select the integration mode
     integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
-    %integrator = @(t0, dt, tf, x0, veh, u) integratorEuler(t0, dt, tf, x0, veh, u);
+%     integrator = @(t0, dt, tf, x0, veh, u) integratorEuler(t0, dt, tf, x0, veh, u);
     
     % Integrate the state
     t0 = 0; 
     dt = 0.1;
-    tf =60;
+    tf =100;
     [tmat, xmat] = integrator(t0, dt, tf, x0, veh, u);
     
     % Plot the velocities
@@ -163,7 +169,7 @@ function [tmat, xmat] = integratorEuler(t0, dt, tf, x0, veh, u)
     for k = 1:len
         % Calculate state update equation
         t = tmat(k);
-        xdot = veh.kinematics(t, x, u(x,t));
+        xdot = veh.kinematics(t, x, u(t,x));
         
         % Update the state
         x = x + dt * xdot;
@@ -219,6 +225,32 @@ function u = constantRadiusSmoothBicycle(t, x,veh, K)
     
     u = -K * z;   
 
+end
+
+function u = goToGoalApproximateDiffeomorphismDifferential(t, x, veh, q_d, eps, K)
+    % Get states
+    x_pos = x(veh.x_ind);
+    y_pos = x(veh.y_ind);
+    [v, w] = veh.getVelocities(t, x, 0);
+    th = x(veh.th_ind);
+    c = cos(th);
+    s = sin(th);
+    
+    % Form espilon variables
+    w_hat_e = [0 -eps*w; w/eps 0];
+    R_e = [c -eps*s; s eps*c];
+    R_e_inv = [1 0; 0 1/eps] * [c s; -s c];
+    
+    % Calculate current values of espilon state
+    q_eps = [x_pos; y_pos] + eps * [c; s];
+    q_eps_dot = R_e*[v; w];
+    q = [q_eps; q_eps_dot];
+    
+    % Calculate point control
+    u_point = -K*(q - 0);
+    
+    % Calculate the control inputs
+    u = R_e_inv*u_point - w_hat_e*[v; w];    
 end
 
 function u = goToGoalApproximateDiffeomorphismUnicycle(t, x, veh, q_d, eps, K)

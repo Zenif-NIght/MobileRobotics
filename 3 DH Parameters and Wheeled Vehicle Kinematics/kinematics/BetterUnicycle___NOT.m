@@ -89,38 +89,42 @@ function [tmat, xmat] = integratorEuler(t0, dt, tf, x0, veh, u)
     for k = 1:len        
         % Calculate state update equation        
         t = tmat(k);        
-        xdot = veh.kinematics(t, x, u(x,t));        
+        xdot = veh.kinematics(t, x, u(t,x));        
         % Update the state        
         x = x + dt * xdot;        
         % Store the state        
         xmat(:,k) = x;
-        endendfunction u = constantRadiusBetterUnicycle(t, x, veh)   
-        % Define desired values   
-        v_d = 5;  
-        w_d = 0.5; 
-        % Extract states   
-        v = x(veh.v_ind);  
-        w = x(veh.w_ind);  
-        % Simple feedback control to calculate inputs 
-        u_v = -(v-v_d);    
-        u_w = -(w-w_d);    
-        u = [u_v; u_w];
-        endfunction u = constantRadiusContinuousSteeringBicycle(t, x, veh)  
-        % Define desired values 
-        v_d = 5;   
-        phi_d = 0.0997;
-        % Extract states  
-        v = x(veh.v_ind); 
-        phi = x(veh.phi_ind);  
-        % Simple feedback control to calculate inputs 
-        u_v = -(v-v_d);  
-        phi_err = -(phi-phi_d); 
-        phi_err = atan2(sin(phi_err), cos(phi_err)); 
-        % Angle trick to get error angle between -pi and pi 
-        u_phi = phi_err;   
-        u = [u_v; u_phi];
-        endfunction
-        u = constantRadiusContinuousSteeringBicycle13_48(t, x, veh)  
+    end
+end
+function u = constantRadiusBetterUnicycle(t, x, veh)   
+    % Define desired values   
+    v_d = 5;  
+    w_d = 0.5; 
+    % Extract states   
+    v = x(veh.v_ind);  
+    w = x(veh.w_ind);  
+    % Simple feedback control to calculate inputs 
+    u_v = -(v-v_d);    
+    u_w = -(w-w_d);    
+    u = [u_v; u_w];
+end
+        
+function u = constantRadiusContinuousSteeringBicycle(t, x, veh)  
+    % Define desired values 
+    v_d = 5;   
+    phi_d = 0.0997;
+    % Extract states  
+    v = x(veh.v_ind); 
+    phi = x(veh.phi_ind);  
+    % Simple feedback control to calculate inputs 
+    u_v = -(v-v_d);  
+    phi_err = -(phi-phi_d); 
+    phi_err = atan2(sin(phi_err), cos(phi_err)); 
+    % Angle trick to get error angle between -pi and pi 
+    u_phi = phi_err;   
+    u = [u_v; u_phi];
+end
+function u = constantRadiusContinuousSteeringBicycle13_48(t, x, veh)  
         % Define desired values 
         v_d = 5;    
         phi_d = 0.0997; 
@@ -136,44 +140,44 @@ function [tmat, xmat] = integratorEuler(t0, dt, tf, x0, veh, u)
         u_phi = 5*phi_err- phi_dot; 
         u = [u_v; u_phi];
     end
-end
-    function u = constantRadiusBetterUnicycle(t,x,veh)
-                % Define desired values    
-        wrd = 21;  
-        wld = 19;  
 
-        % Extract states 
-        wr = x(veh.ind_wr); 
-        wl = x(veh.ind_wl);  
-        % Simple feedback control  
-        ur = -(wr-wrd);  
-        ul = -(wl-wld); 
-        u = [ur; ul];
-     end
-        
-    function u = constantRadiusSmoothDiffDrive(t, x, veh)
-        % Define desired values    
-        wrd = 21;  
-        wld = 19;  
+% function u = constantRadiusBetterUnicycle(t,x,veh)
+%             % Define desired values    
+%     wrd = 21;  
+%     wld = 19;  
+% 
+%     % Extract states 
+%     wr = x(veh.ind_wr); 
+%     wl = x(veh.ind_wl);  
+%     % Simple feedback control  
+%     ur = -(wr-wrd);  
+%     ul = -(wl-wld); 
+%     u = [ur; ul];
+%     end
+    
+function u = constantRadiusSmoothDiffDrive(t, x, veh)
+    % Define desired values    
+    wrd = 21;  
+    wld = 19;  
 
-        % Extract states 
-        wr = x(veh.ind_wr); 
-        wl = x(veh.ind_wl);  
-        % Simple feedback control  
-        ur = -(wr-wrd);  
-        ul = -(wl-wld); 
-        u = [ur; ul];
-     end
-
-    function u = constantRadiusSmoothDiffDriveStateFeedback(t, x, veh, K, vd, wd)  
-        % Form the velocity state  
-        [v, w] = veh.getVelocities(t, x, 0); 
-        x_vel = [v; w];   
-        % Define desired values 
-        xd = [vd; wd];   
-        % Define shifted state  
-        z = x_vel - xd;   
-        % Calculate control 
-        u = -K*z;
+    % Extract states 
+    wr = x(veh.ind_wr); 
+    wl = x(veh.ind_wl);  
+    % Simple feedback control  
+    ur = -(wr-wrd);  
+    ul = -(wl-wld); 
+    u = [ur; ul];
     end
+
+function u = constantRadiusSmoothDiffDriveStateFeedback(t, x, veh, K, vd, wd)  
+    % Form the velocity state  
+    [v, w] = veh.getVelocities(t, x, 0); 
+    x_vel = [v; w];   
+    % Define desired values 
+    xd = [vd; wd];   
+    % Define shifted state  
+    z = x_vel - xd;   
+    % Calculate control 
+    u = -K*z;
+end
 
