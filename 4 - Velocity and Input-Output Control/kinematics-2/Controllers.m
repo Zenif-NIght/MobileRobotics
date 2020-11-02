@@ -21,23 +21,23 @@ close all;
 
     
     %% Smooth Differential Drive 
-%     vdmax = .1*1.0; % Maximum desired velocity 
-%     wdmax = 2*0.1; % Maximum desired angular velocity
-%     armax = 0.1; % Maxiumum angular acceleration
-%     almax = 0.1; % Maxiumum angular acceleration
-%     
-%     veh = SmoothDifferentialDrive;
-%     r = veh.r;
-%     L = veh.L;
-%     % Calculate point control gains
-%     A = [zeros(2)]
-%     M = [r/2 r/2;r/L -r/L]
-%     Q = [1/vdmax^2 0;0 1/wdmax^2]
-%     R = [1/armax^2 0; 0 1/almax^2]
-%     K = lqr(A, M, Q, R)
-% 
-%     u = @(t,x)constantRadiusSmoothDiffDrive(t,x,veh, K);
-%     x0 = [0; 0; 0; 0; 0];
+    vdmax = .1*1.0; % Maximum desired velocity 
+    wdmax = 2*0.1; % Maximum desired angular velocity
+    armax = 0.1; % Maxiumum angular acceleration
+    almax = 0.1; % Maxiumum angular acceleration
+    
+    veh = SmoothDifferentialDrive;
+    r = veh.r;
+    L = veh.L;
+    % Calculate point control gains
+    A = [zeros(2)]
+    M = [r/2 r/2;r/L -r/L]
+    Q = [1/vdmax^2 0;0 1/wdmax^2]
+    R = [1/armax^2 0; 0 1/almax^2]
+    K = lqr(A, M, Q, R)
+
+    u = @(t,x)constantRadiusSmoothDiffDrive(t,x,veh, K);
+    x0 = [0; 0; 0; 0; 0];
 
     %% Smooth Bicycle Drive 
     vdmax = 1.0; % Maximum deviation velocity 
