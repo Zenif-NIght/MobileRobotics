@@ -47,11 +47,19 @@ classdef OrbitAvoidField < VectorField
         %   th: Current orientation of the vehicle
         
             %%% TODO: remove the following if statement:
-            if true
-                g = [0;0];
-                return;
+            
+            qHat = -(x - obj.x_o);
+            if(obj.k_conv ~= 0)
+                gamma = obj.k_conv*(obj.rad^2 - (qHat')*qHat);
+            end
+            wHat = [gamma -obj.w; obj.w gamma];
+            g = wHat * qHat;
+            v_goal = norm(g);
+            if v_goal > obj.v_d
+                g = obj.v_d / v_goal * g;
             end
             
+%            return;
         
             % Calculate the difference between the vector and obstacle
             

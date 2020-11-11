@@ -19,12 +19,12 @@ classdef CombinedGoToGoalVectorScenario < VectorFieldScenario
             x_g = [16; 10]; % try [20; 5] [25; 5];
             
             % Obstacle avoidance variables
-            S = 0; % Sphere of influence 
-            R = 0; % Radius of max influence
+            S = 2; % Sphere of influence 
+            R = 0.5; % Radius of max influence
             
             % Weights
-            w_g2g = 0; % Weight on the go to goal vector field
-            w_avoid = 0; % Weight on the avoidance vector field
+            w_g2g = 2; % Weight on the go to goal vector field
+            w_avoid = 2; % Weight on the avoidance vector field
             weights = zeros(1+veh.sensor.n_lines, 1);
             weights(1) = w_g2g;
             weights(2:end) = w_avoid;
