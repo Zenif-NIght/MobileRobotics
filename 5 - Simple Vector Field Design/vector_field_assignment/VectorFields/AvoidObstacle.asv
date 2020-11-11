@@ -48,14 +48,11 @@ classdef AvoidObstacle < VectorField
             v_g = obj.v_max * ( exp(-dist^2/obj.S));
             
             % Check distance prior to dividing by zero
-            if dist > 0 && dist >= obj.R % Avoid dividing by zero
-
+            if dist > 0 && dist < obj.R % Avoid dividing by zero
+    
                 g = v_g/dist * g; % Dividing by dist is dividing by the norm
-          
             elseif dist > 0 && dist < obj.R 
-                
                  g = obj.v_max/dist * g;
-                 
             else
                 g = [0;0];
             end
