@@ -39,16 +39,17 @@ classdef OrbitField < VectorField
         %         5-10) 
         %   x: 2D position for calculating the vector
         
-            qHat = x - obj.x_c;
+       
+
+%             R = [cos(theta) -sin(theta); sin(theta) cos(theta)];
+            qHat = x - obj.x_c
             if(obj.k_conv ~= 0)
                 gamma = obj.k_conv*(obj.rad^2 - (qHat')*qHat);
             end
             wHat = [gamma -obj.w; obj.w gamma];
             g = wHat * qHat;
-            v_goal = norm(g);
-            if v_goal > obj.v_d
-                g = obj.v_d / v_goal * g;
-            end
+            v_goal = norm 9g);
+            if 
         end
         
         function h = plotVectorField(obj, t)

@@ -45,8 +45,8 @@ classdef LineVectorField < VectorField
             
             %%% TODO: create the correct rotation matrices (should not
             %%% simply be the identity matrices)
-            obj.R_cl = [cos(psi_l) -sin(psi_l); sin(psi_l) cos(psi_l)]; % Rotation from line frame to cartesian frame
-            obj.R_lc = [cos(-psi_l) -sin(-psi_l); sin(-psi_l) cos(-psi_l)]; % Rotation from cartesian frame to line frame
+            obj.R_cl = eye(2); % Rotation from line frame to cartesian frame
+            obj.R_lc = eye(2); % Rotation from cartesian frame to line frame
         end
         
         function g = getVector(obj, ~, x, ~)
@@ -59,10 +59,9 @@ classdef LineVectorField < VectorField
         
             %%% Todo: implement
             q = obj.R_lc * (x - obj.x_l);
-            d = [0 1]*q;
-            sigma =obj.slope;
-            psi_d = pi/2 *(1 -2/(1+exp(-d/sigma^2)));
-            g = obj.v_d* obj.R_cl*[cos(psi_d); sin(psi_d)];  
+            d = [o 1]*q;
+            psi = pi/2 *(1 -2/(1+exp(-d/sigma^2)))
+            g = obj.v_d* R_cl;  
             
         end
     end
