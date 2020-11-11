@@ -45,17 +45,24 @@ classdef AvoidObstacle < VectorField
             % Scale the magnitude of the resulting vector using a smooth
             % convergence
             dist = norm(g);
-            v_g = obj.v_max * ( exp(-dist^2/obj.S));
+            if(obj.S -obj.R ==0)
+                g = [0;0];
+                return 
+            end
+            v_g = obj.v_max * (obj.S-dist)/(obj.S -obj.R);% ( exp(-dist^2/obj.S));
             
             % Check distance prior to dividing by zero
-            if dist > 0 && dist >= obj.R % Avoid dividing by zero
+            if dist > 0 
+                if dist > obj.S
+                     g = [0;0];
+                elseif dist <= obj.S && obj.S >= obj.R  % Avoid dividing by zero
 
                 g = v_g/dist * g; % Dividing by dist is dividing by the norm
           
-            elseif dist > 0 && dist < obj.R 
-                
-                 g = obj.v_max/dist * g;
-                 
+                elseif dist > 0 && dist < obj.R 
+
+                     g = obj.v_max/dist * g;
+                end
             else
                 g = [0;0];
             end
