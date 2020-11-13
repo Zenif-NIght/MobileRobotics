@@ -45,26 +45,14 @@ classdef OrbitAvoidField < VectorField
         %         5-12) 
         %   x: 2D position for calculating the vector
         %   th: Current orientation of the vehicle
-        
-            %%% TODO: remove the following if statement:
-            
-            qHat = -(x - obj.x_o);
-            if(obj.k_conv ~= 0)
-                gamma = obj.k_conv*(obj.rad^2 - (qHat')*qHat);
-            end
-            wHat = [gamma -obj.w; obj.w gamma];
-            g = wHat * qHat;
-            v_goal = norm(g);
-            if v_goal > obj.v_d
-                g = obj.v_d / v_goal * g;
-            end
-            
-%            return;
+
         
             % Calculate the difference between the vector and obstacle
+            xhat = (x - obj.x_o);
             
             % Calculate the orientation difference from direction towards
             % obstacle
+            th_e =  th - atan2(xhat(1),xhat(2))  ;
             
             % Calculate the rotation based on the angle to the obstacle
             w_act = abs(obj.w);
@@ -73,25 +61,46 @@ classdef OrbitAvoidField < VectorField
             end
             
             % Get the effective radius of the vecicle from the center
+            rad_e = obj.v_d/w_act;
             
             % Calculate convergence gain
                 % Don't attract vehicle to the orbit
+             gam = obj.k_conv*(rad_e^2 - (xhat')*xhat);
                         
             % Create the orbit vector
             A = [gam, w_act; -w_act, gam];
             g = A*xhat;   
             
             % Scale the vector field base on the sphere of influence
-            
+            d = norm(g); % TODO might need to look in to this 
+            k_i = 0;
+            if d > obj.S
+                k_i = 0;
+            elseif rad_e < d && d <= obj.S
+                k_i = (obj.S - d)/(obj.S - rad_e);
+            elseif d<= rad_e
+                k_i = 0;
+            else
+                k_i ="k_i ERROR";
+            end
+            g = g * k_i;
             
             % Scale the vector field by the orientation influence
-            
+            k_o =0;
+            if abs(th) <= pi/2
+                k_o = 1;
+            else
+                k_o = 0;
+            end
+            g = g * k_o;
             
             % Calculate the vector scaled by the sphere of influence and
-            % the orientation scale
+            % the orientation scale 
             
             % Threshold the vector field to be less than or equal to the
             % desired velocity
+            
+            
             
         end
         

@@ -34,7 +34,7 @@ function launch_simple_fields()
 %     field = GoToGoalField(x_vec, y_vec, [3; 4], 1);
 %     field = AvoidObstacle(x_vec, y_vec, [1; 1], 1);
     field = OrbitField(x_vec, y_vec, [1; 1], 2, -0.25, .1);
-    field = LineVectorField(x_vec, y_vec, [0; 0], 0, 1, 1);
+%     field = LineVectorField(x_vec, y_vec, [0; 0], 0, 1, 1);
 %     field = LineVectorField(x_vec, y_vec, [-2; 2], pi/4, 1, 1);
     
     % Vector field scenario
