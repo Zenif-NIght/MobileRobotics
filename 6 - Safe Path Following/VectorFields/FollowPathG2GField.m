@@ -40,8 +40,21 @@ classdef FollowPathG2GField < VectorField
             % Get the current goal position
             x_g = obj.traj.getPoint(t);
             
-            %%% TODO: implement
-            g = [0;0];
+            % Calculate the difference vector from vehicle position to goal
+            g = obj.go_to_goal.x_g - x;
+            
+            % Scale the magnitude of the resulting vector using a smooth
+            % convergence
+            dist = norm(g);
+            v_g = obj.go_to_goal.v_max * (1- exp(-dist^2/obj.go_to_goal.sig_sq));
+            
+            % Check distance prior to dividing by zero
+            if dist > 0 % Avoid dividing by zero
+                g = v_g/dist * g; % Dividing by dist is dividing by the norm
+            else
+                g = [0;0];
+            end
+            obj.go_to_goal.x_g = x_g;
         end
         
         function setObstacles(obj, ~, ~)
