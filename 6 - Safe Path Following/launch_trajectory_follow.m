@@ -43,8 +43,8 @@ function launch_trajectory_follow()
     
     % Create a vector field
     v_max = 1.0; % Maximum allowable velocity
-    field = FollowPathG2GField(x_vec, y_vec, v_max, traj);
-    %field = FollowPathG2GAvoidField(x_vec, y_vec, v_max, traj);
+%     field = FollowPathG2GField(x_vec, y_vec, v_max, traj);
+    field = FollowPathG2GAvoidField(x_vec, y_vec, v_max, traj);
     %field = FollowPathG2GOrbitAvoidField(x_vec, y_vec, v_max, vd, traj);
     
     % Vector field scenario

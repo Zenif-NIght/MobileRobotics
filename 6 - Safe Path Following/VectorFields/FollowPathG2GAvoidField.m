@@ -26,12 +26,12 @@ classdef FollowPathG2GAvoidField < VectorField
         obs_avoid % Obstacle avoidance vector field
         
         % Weights on the vector fields
-        w_g2g = 0; % Weight on the go-to-goal vector field
-        w_avoid = 0; % Weight on the obstacle avoidance vector field
+        w_g2g = 2; % Weight on the go-to-goal vector field
+        w_avoid = 2; % Weight on the obstacle avoidance vector field
         
         % Convergence variables
-        S = 0 % Sphere of influence
-        R = 0 % Radius of max effect 
+        S = 2 % Sphere of influence
+        R = 0.5 % Radius of max effect 
     end
     
     methods
@@ -70,6 +70,49 @@ classdef FollowPathG2GAvoidField < VectorField
             
             %%% TODO: implement
             g = [0;0];
+            for k = 1:obj.n_obs
+                q_o = obj.q_o_mat(:,k)
+                if isinf(sum(q_o))
+                    continue;
+                end
+                
+%################# From the Orbit Avoif Field #################
+                g = x - obj.x_o;
+            
+                % Scale the magnitude of the resulting vector (Sphere of
+                % influence)
+                dist = norm(g);
+                scale_sphere = 1;
+                if dist > obj.S
+                    scale_sphere = 0;
+                elseif dist > obj.R
+                    scale_sphere = (obj.S - dist) / (obj.S - obj.R);
+                end
+
+                % Scale the magunitude of the resulting vector by the error
+                % orientation
+                th_g = atan2(-g(2), -g(1)); % -g as we want to know the heading to the obstacle
+                th_e = th-th_g;
+                th_e = abs(atan2(sin(th_e), cos(th_e))); % Error in orientation from pointing to the obstacle
+                scale_orien = 1; % Scaling due to orientation difference
+                if th_e > obj.So
+                    scale_orien = 0;
+                elseif dist > obj.R
+                    scale_orien = (obj.So - th_e) / (obj.So - obj.Ro);            
+                end
+
+                % Create the velocity scaled by the influence factors
+                v_g = obj.v_max * scale_sphere * scale_orien;
+
+                % Output g
+                if dist > 0 % Avoid dividing by zero
+                    g = v_g/dist * g; % Dividing by dist is dividing by the norm
+                else % Choose a random position if you are on top of the obstacle
+                    g = rand(2,1);
+                end
+
+                end 
+            
         end
         
         function setObstacles(obj, q_o_mat, orien)
