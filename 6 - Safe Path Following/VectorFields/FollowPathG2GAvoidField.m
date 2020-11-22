@@ -59,7 +59,7 @@ classdef FollowPathG2GAvoidField < VectorField
             obj.obs_avoid.R = obj.R;
         end
         
-        function g = getVector(obj, t, x, ~)
+        function g = getVector(obj, t, x, th)
         % getVector will return a go-to-goal vector given the position x
         %
         % Inputs:
@@ -77,7 +77,7 @@ classdef FollowPathG2GAvoidField < VectorField
                 end
                 
 %################# From the Orbit Avoif Field #################
-                g = x - obj.x_o;
+                g = x - obj.obs_avoid.x_o;%go_to_goal.x_g;
             
                 % Scale the magnitude of the resulting vector (Sphere of
                 % influence)
@@ -92,13 +92,14 @@ classdef FollowPathG2GAvoidField < VectorField
                 % Scale the magunitude of the resulting vector by the error
                 % orientation
                 th_g = atan2(-g(2), -g(1)); % -g as we want to know the heading to the obstacle
+%                 th = tan(obj.go_to_goal.x_g(2)/obj.go_to_goal.x_g(1));
                 th_e = th-th_g;
                 th_e = abs(atan2(sin(th_e), cos(th_e))); % Error in orientation from pointing to the obstacle
                 scale_orien = 1; % Scaling due to orientation difference
-                if th_e > obj.So
+                if th_e > obj.obs_avoid.S
                     scale_orien = 0;
                 elseif dist > obj.R
-                    scale_orien = (obj.So - th_e) / (obj.So - obj.Ro);            
+                    scale_orien = (obj.obs_avoid.S - th_e) / (obj.obs_avoid.S - obj.obs_avoid.R);            
                 end
 
                 % Create the velocity scaled by the influence factors
@@ -111,7 +112,7 @@ classdef FollowPathG2GAvoidField < VectorField
                     g = rand(2,1);
                 end
 
-                end 
+            end 
             
         end
         
