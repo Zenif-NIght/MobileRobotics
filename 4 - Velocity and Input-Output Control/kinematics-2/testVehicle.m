@@ -4,11 +4,11 @@ function testVehicle()
 %     veh = SimpleUnicycle;
 %     u = @(t,x)constantRadiusUnicycle(t,x);
 
-%     veh = DifferentialDrive;
-%     u = @(t,x)constantDifferentialDive(t,x,veh);
+    veh = DifferentialDrive;
+    u = @(t,x)constantDifferentialDive(t,x,veh);
 
-    veh = SimpleBicycle;
-    u = @(t,x)constantRadiusBicycle(t,x);
+%     veh = SimpleBicycle;
+%     u = @(t,x)constantRadiusBicycle(t,x);
     
     % Select the integration mode
     %integrator = @(t0, dt, tf, x0, veh, u) integrateODE(t0, dt, tf, x0, veh, u);
@@ -26,7 +26,7 @@ function testVehicle()
     subplot(2,2,1)
     for k = 1:length(tmat)
        veh.plotState(tmat(k), xmat(:,k));
-%        pause(dt);
+       pause(dt);
     end
     title('position trajectory, Drive Path')
 
